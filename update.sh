@@ -1,0 +1,1 @@
+docker build -t alombardo4/idrac6-fan-control:1.0.2 . && docker push alombardo4/idrac6-fan-control:1.0.2

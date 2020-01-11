@@ -1,0 +1,1 @@
+* * * * * /bin/bash -c "/opt/check-temp.sh &> /var/log/cron.log"

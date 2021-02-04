@@ -5,7 +5,7 @@ FANSPEED=`cat /fanspeed.txt`
 
 MAXTEMP=32
 
-TEMP=$(ipmitool -I lanplus -H $IPMIHOST -U $IPMIUSER -P $IPMIPW sdr type temperature |grep Ambient |grep degrees |grep -Po '\d{2}' | tail -1)
+TEMP=$(ipmitool -I lanplus -H $IPMIHOST -U $IPMIUSER -P $IPMIPW sdr type temperature |grep Inlet |grep degrees |grep -Po '\d{2}' | tail -1)
 
 echo "Current Temp is $TEMP C"
 if [ $TEMP -gt $MAXTEMP ];

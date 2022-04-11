@@ -1,3 +1,5 @@
+#!/bin/bash
+
 IPMIHOST=`cat /host.txt`
 IPMIUSER=`cat /user.txt`
 IPMIPW=`cat /pw.txt`
@@ -5,15 +7,22 @@ FANSPEED=`cat /fanspeed.txt`
 
 MAXTEMP=32
 
-TEMP=$(ipmitool -I lanplus -H $IPMIHOST -U $IPMIUSER -P $IPMIPW sdr type temperature |grep Inlet |grep degrees |grep -Po '\d{2}' | tail -1)
+if [[ $IPMIHOST == "local" ]]
+then
+  LOGIN_STRING='open'
+else
+  LOGIN_STRING="lanplus -H $IPMIHOST -U $IPMIUSER -P $IPMIPW"
+fi
+
+TEMP=$(ipmitool -I $LOGIN_STRING sdr type temperature |grep Inlet |grep degrees |grep -Po '\d{2}' | tail -1)
 
 echo "Current Temp is $TEMP C"
 if [ $TEMP -gt $MAXTEMP ];
 then
   echo "Temp is too high. Activating dynamic fan control"
-  ipmitool -I lanplus -H $IPMIHOST -U $IPMIUSER -P $IPMIPW raw 0x30 0x30 0x01 0x01
+  ipmitool -I $LOGIN_STRING raw 0x30 0x30 0x01 0x01
 else
   echo "Temp is OK. Using manual fan control"
-  ipmitool -I lanplus -H $IPMIHOST -U $IPMIUSER -P $IPMIPW raw 0x30 0x30 0x01 0x00
-  ipmitool -I lanplus -H $IPMIHOST -U $IPMIUSER -P $IPMIPW raw 0x30 0x30 0x02 0xff $FANSPEED
+  ipmitool -I $LOGIN_STRING raw 0x30 0x30 0x01 0x00
+  ipmitool -I $LOGIN_STRING raw 0x30 0x30 0x02 0xff $FANSPEED
 fi

@@ -25,5 +25,5 @@ RUN /usr/bin/crontab /etc/cron.d/fan-control
 ENV IDRAC_HOST local
 #ENV IDRAC_USER root
 #ENV IDRAC_PW calvin
-ENV FANSPEED 0x05
+ENV FAN_SPEED 5
 CMD /startup.sh && cron && tail -f /var/log/cron.log

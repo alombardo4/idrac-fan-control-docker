@@ -2,8 +2,7 @@ IPMIHOST=`cat /host.txt`
 IPMIUSER=`cat /user.txt`
 IPMIPW=`cat /pw.txt`
 FANSPEED=`cat /fanspeed.txt`
-
-MAXTEMP=${MAXTEMP:-32}
+MAXTEMP=`cat /maxtemp.txt`
 
 TEMP=$(ipmitool -I lanplus -H $IPMIHOST -U $IPMIUSER -P $IPMIPW sdr type temperature |grep Inlet |grep degrees |grep -Po '\d{2}' | tail -1)
 

@@ -3,7 +3,8 @@
 IPMIHOST=`cat /host.txt`
 IPMIUSER=`cat /user.txt`
 IPMIPW=`cat /pw.txt`
-FANSPEED=`cat /fanspeed.txt`
+DECIMAL_FAN_SPEED=`cat /decimal_fan_speed.txt`
+HEXADECIMAL_FAN_SPEED=`cat /hexadecimal_fan_speed.txt`
 
 MAXTEMP=32
 
@@ -24,5 +25,5 @@ then
 else
   echo "Temp is OK. Using manual fan control"
   ipmitool -I $LOGIN_STRING raw 0x30 0x30 0x01 0x00
-  ipmitool -I $LOGIN_STRING raw 0x30 0x30 0x02 0xff $FANSPEED
+  ipmitool -I $LOGIN_STRING raw 0x30 0x30 0x02 0xff $HEXADECIMAL_FAN_SPEED
 fi

@@ -1,8 +1,8 @@
 #!/bin/bash
 
-echo $IDRAC_HOST >> /host.txt
-echo $IDRAC_USER >> /user.txt
-echo $IDRAC_PW >> /pw.txt
+echo $IDRAC_HOST >> /idrac_host.txt
+echo $IDRAC_USERNAME >> /idrac_username.txt
+echo $IDRAC_PASSWORD >> /idrac_password.txt
 
 if [[ $FAN_SPEED == 0x* ]]
 then
@@ -16,10 +16,10 @@ fi
 echo $DECIMAL_FAN_SPEED >> /decimal_fan_speed.txt
 echo $HEXADECIMAL_FAN_SPEED >> /hexadecimal_fan_speed.txt
 
-echo "Host: `cat /host.txt`"
+echo "Idrac/IPMI host: `cat /idrac_host.txt`"
 if [[ $IDRAC_HOST != "local" ]]
 then
-  echo "User: `cat /user.txt`"
-  echo "PW: `cat /pw.txt`"
+  echo "Idrac/IPMI user: `cat /idrac_username.txt`"
+  echo "Idrac/IPMI password: `cat /idrac_password.txt`"
 fi
 echo "Fan speed objective: `cat /decimal_fan_speed.txt`%"

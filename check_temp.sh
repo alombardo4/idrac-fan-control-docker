@@ -5,8 +5,7 @@ IPMI_USERNAME=`cat /idrac_username.txt`
 IPMI_PASSWORD=`cat /idrac_password.txt`
 DECIMAL_FAN_SPEED=`cat /decimal_fan_speed.txt`
 HEXADECIMAL_FAN_SPEED=`cat /hexadecimal_fan_speed.txt`
-
-MAX_INLET_TEMPERATURE=32
+MAXIMUM_INLET_TEMPERATURE=`cat /maximum_inlet_temperature.txt`
 
 if [[ $IPMI_HOST == "local" ]]
 then
@@ -23,7 +22,7 @@ NC='\033[0m' # No Color
 
 echo "------------------------------------"
 echo "Current inlet temperature is $INLET_TEMPERATURE °C."
-if [ $INLET_TEMPERATURE -gt $MAX_INLET_TEMPERATURE ]
+if [ $INLET_TEMPERATURE -gt $MAXIMUM_INLET_TEMPERATURE ]
 then
   printf "Inlet temperature is ${RED}too high${NC}. Activating default dynamic fan control."
   ipmitool -I $LOGIN_STRING raw 0x30 0x30 0x01 0x01

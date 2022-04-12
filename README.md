@@ -5,6 +5,7 @@
 - `IDRAC_PASSWORD` parameter is only necessary if you're adressing a distant iDRAC. Default value is "calvin".
 - `FAN_SPEED` parameter can be set as a decimal (from 0 to 100%) or hexadecimal value (from 0x00 to 0x64) you want to set the fans to. Default value is 5(%).
 - `CPU_TEMPERATURE_TRESHOLD` parameter is the T°junction (junction temperature) threshold beyond which the Dell fan mode defined in your BIOS will become active again (to protect the server hardware against overheat). Default value is 50(°C).
+- `CHECK_INTERVAL` parameter is the time (in seconds) between each temperature check. Default value is 60(s).
 
 To use:
 

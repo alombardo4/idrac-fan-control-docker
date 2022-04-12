@@ -26,5 +26,6 @@ ENV IDRAC_HOST local
 #ENV IDRAC_USER root
 #ENV IDRAC_PASSWORD calvin
 ENV FAN_SPEED 5
+ENV MAXIMUM_TEMPERATURE 32
 
 CMD /startup.sh && /opt/check_temp.sh && cron && tail -f /var/log/cron.log

@@ -15,7 +15,7 @@ fi
 
 echo $DECIMAL_FAN_SPEED >> /decimal_fan_speed.txt
 echo $HEXADECIMAL_FAN_SPEED >> /hexadecimal_fan_speed.txt
-echo $MAXIMUM_TEMPERATURE >> /maximum_inlet_temperature.txt
+echo $CPU_TEMPERATURE_TRESHOLD >> /cpu_temperature_treshold.txt
 
 echo "Idrac/IPMI host: `cat /idrac_host.txt`"
 if [[ $IDRAC_HOST != "local" ]]
@@ -24,4 +24,4 @@ then
   echo "Idrac/IPMI password: `cat /idrac_password.txt`"
 fi
 echo "Fan speed objective: `cat /decimal_fan_speed.txt`%"
-echo "Maximum inlet temperature: `cat /maximum_inlet_temperature.txt`°C"
+echo "CPU temperature treshold: `cat /cpu_temperature_treshold.txt`°C"

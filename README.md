@@ -4,7 +4,7 @@
 - `IDRAC_USERNAME` parameter is only necessary if you're adressing a distant iDRAC. Default value is "root".
 - `IDRAC_PASSWORD` parameter is only necessary if you're adressing a distant iDRAC. Default value is "calvin".
 - `FAN_SPEED` parameter can be set as a decimal (from 0 to 100%) or hexadecimal value (from 0x00 to 0x64) you want to set the fans to. Default value is 5(%).
-- `MAXIMUM_TEMPERATURE` parameter is the threshold beyond which the Dell fan mode defined in your BIOS will become active again (to protect the server hardware against overheat). Default value is 32(°C).
+- `CPU_TEMPERATURE_TRESHOLD` parameter is the T°junction (junction temperature) threshold beyond which the Dell fan mode defined in your BIOS will become active again (to protect the server hardware against overheat). Default value is 50(°C).
 
 To use:
 
@@ -15,7 +15,7 @@ docker run -d \
   --name Dell_iDRAC_fan_controller \
   --restart unless-stopped \
   -e FAN_SPEED=<dec or hex fan speed> \
-  -e MAXIMUM_TEMPERATURE=<dec temp treshold> \
+  -e CPU_TEMPERATURE_TRESHOLD=<dec temp treshold> \
   alombardo4/idrac-fan-control:latest
 ```
 
@@ -29,7 +29,7 @@ docker run -d \
   -e IDRAC_USERNAME=<iDRAC username> \
   -e IDRAC_PASSWORD=<iDRAC password> \
   -e FAN_SPEED=<dec or hex fan speed> \
-  -e MAXIMUM_TEMPERATURE=<dec temp treshold> \
+  -e CPU_TEMPERATURE_TRESHOLD=<dec temp treshold> \
   alombardo4/idrac-fan-control:latest
 ```
 
@@ -48,7 +48,7 @@ services:
     environment:
       - IDRAC_HOST=local # can be omitted as it is the default value
       - FAN_SPEED=0x05 # set to the decimal or hexadecimal value you want to set the fans to (from 0 to 100%)
-      - MAXIMUM_TEMPERATURE=<dec temp treshold>
+      - CPU_TEMPERATURE_TRESHOLD=<dec temp treshold>
     devices:
       - /dev/ipmi0:/dev/ipmi0
 ```
@@ -68,5 +68,5 @@ services:
       - IDRAC_USERNAME=root # set to your IPMI username
       - IDRAC_PASSWORD=calvin # set to your IPMI password
       - FAN_SPEED=0x05 # set to the decimal or hexadecimal value you want to set the fans to (from 0 to 100%)
-      - MAXIMUM_TEMPERATURE=<dec temp treshold>
+      - CPU_TEMPERATURE_TRESHOLD=<dec temp treshold>
 ```

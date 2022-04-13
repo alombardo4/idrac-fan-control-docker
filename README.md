@@ -59,7 +59,7 @@ version: '3'
 
 services:
   Dell_iDRAC_fan_controller:
-    image: tigerblue77/dell_idrac_fan_controller
+    image: tigerblue77/dell_idrac_fan_controller:latest
     container_name: Dell_iDRAC_fan_controller
     restart: unless-stopped
     environment:
@@ -78,7 +78,7 @@ version: '3'
 
 services:
   Dell_iDRAC_fan_controller:
-    image: tigerblue77/dell_idrac_fan_controller
+    image: tigerblue77/dell_idrac_fan_controller:latest
     container_name: Dell_iDRAC_fan_controller
     restart: unless-stopped
     environment:

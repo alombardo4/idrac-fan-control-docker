@@ -1,4 +1,4 @@
-# IDRAC Fan Controller Docker Image
+# Dell iDRAC fan controller Docker Image
 
 - `IDRAC_HOST` parameter can be set to "local" or to your distant iDRAC's IP address. Default value is "local".
 - `IDRAC_USERNAME` parameter is only necessary if you're adressing a distant iDRAC. Default value is "root".

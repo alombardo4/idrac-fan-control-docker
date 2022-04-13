@@ -19,4 +19,4 @@ ENV FAN_SPEED 5
 ENV CPU_TEMPERATURE_TRESHOLD 50
 ENV CHECK_INTERVAL 60
 
-CMD /Dell_iDRAC_fan_controller.sh
+CMD ["/Dell_iDRAC_fan_controller.sh"]

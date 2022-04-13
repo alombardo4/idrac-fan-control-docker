@@ -1,5 +1,28 @@
 #!/bin/bash
 
+# Define global functions
+apply_Dell_profile () {
+  ipmitool -I $LOGIN_STRING raw 0x30 0x30 0x01 0x01
+  CURRENT_FAN_CONTROL_PROFILE="Dell default dynamic fan control profile"
+}
+
+apply_user_profile () {
+  ipmitool -I $LOGIN_STRING raw 0x30 0x30 0x01 0x00
+  ipmitool -I $LOGIN_STRING raw 0x30 0x30 0x02 0xff $HEXADECIMAL_FAN_SPEED
+  CURRENT_FAN_CONTROL_PROFILE="User static fan control profile ($DECIMAL_FAN_SPEED%)"
+}
+
+# Prepare traps in case of container exit
+gracefull_exit () {
+  apply_Dell_profile
+  echo "/!\ WARNING /!\ Container stopped, Dell default dynamic fan control profile applied for safety."
+  exit 0
+}
+
+trap 'gracefull_exit' SIGQUIT SIGKILL SIGTERM
+
+# Prepare, format and define initial variables
+
 #readonly DELL_FRESH_AIR_COMPLIANCE=45
 
 if [[ $FAN_SPEED == 0x* ]]
@@ -11,6 +34,7 @@ else
   HEXADECIMAL_FAN_SPEED=$(printf '0x%02x' $FAN_SPEED)
 fi
 
+# Log main informations given to the container
 echo "Idrac/IPMI host: $IDRAC_HOST"
 if [[ $IDRAC_HOST == "local" ]]
 then
@@ -28,6 +52,7 @@ readonly TABLE_HEADER_PRINT_INTERVAL=10
 i=$TABLE_HEADER_PRINT_INTERVAL
 IS_DELL_PROFILE_APPLIED=true
 
+# Start monitoring
 while true; do
   DATA=$(ipmitool -I $LOGIN_STRING sdr type temperature | grep degrees)
   INLET_TEMPERATURE=$(echo "$DATA" | grep Inlet | grep -Po '\d{2}' | tail -1)
@@ -42,8 +67,7 @@ while true; do
   COMMENT=" -"
   if CPU1_OVERHEAT
   then
-    ipmitool -I $LOGIN_STRING raw 0x30 0x30 0x01 0x01
-    CURRENT_FAN_CONTROL_PROFILE="Dell default dynamic fan control profile"
+    apply_Dell_profile
 
     if ! $IS_DELL_PROFILE_APPLIED
     then
@@ -58,17 +82,15 @@ while true; do
     fi
   elif CPU2_OVERHEAT
   then
-    ipmitool -I $LOGIN_STRING raw 0x30 0x30 0x01 0x01
-    CURRENT_FAN_CONTROL_PROFILE="Dell default dynamic fan control profile"
+    apply_Dell_profile
+
     if ! $IS_DELL_PROFILE_APPLIED
     then
       IS_DELL_PROFILE_APPLIED=true
       COMMENT="CPU 2 temperature is too high. Dell default dynamic fan control profile applied."
     fi
   else
-    ipmitool -I $LOGIN_STRING raw 0x30 0x30 0x01 0x00
-    ipmitool -I $LOGIN_STRING raw 0x30 0x30 0x02 0xff $HEXADECIMAL_FAN_SPEED
-    CURRENT_FAN_CONTROL_PROFILE="User static fan control profile ($DECIMAL_FAN_SPEED%)"
+    apply_user_profile
 
     if $IS_DELL_PROFILE_APPLIED
     then
@@ -86,5 +108,6 @@ while true; do
   printf "%12s  %3d°C  %3d°C  %3d°C  %5d°C  %40s  %s\n" "$(date +"%d-%m-%y %H:%M:%S")" $INLET_TEMPERATURE $CPU1_TEMPERATURE $CPU2_TEMPERATURE $EXHAUST_TEMPERATURE "$CURRENT_FAN_CONTROL_PROFILE" "$COMMENT"
 
   ((i++))
-  sleep $CHECK_INTERVAL
+  sleep $CHECK_INTERVAL &
+  wait $!
 done

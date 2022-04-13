@@ -11,15 +11,11 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v3
       
-    #- name: Build the Docker image
-     # run: docker build . --file Dockerfile --tag dell_idrac_fan_controller:$(date +%s)
-      
     - name: Docker meta
       id: meta
       uses: docker/metadata-action@v3
       with:
         images: tigerblue77/dell_idrac_fan_controller
-        flavor: latest=auto       
         tags: type=raw,value=latest
         
     - name: Login to DockerHub

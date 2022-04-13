@@ -19,7 +19,7 @@ jobs:
       uses: docker/metadata-action@v3
       with:
         images: tigerblue77/dell_idrac_fan_controller
-        tag-custom: latest        
+        flavor: latest=auto       
         
     - name: Login to DockerHub
       uses: docker/login-action@v1

@@ -71,3 +71,7 @@ services:
       - FAN_SPEED=0x05 # set to the decimal or hexadecimal value you want to set the fans to (from 0 to 100%)
       - CPU_TEMPERATURE_TRESHOLD=<dec temp treshold>
 ```
+
+Container console log example:
+
+![image](https://user-images.githubusercontent.com/37409593/163174925-d3d20ed6-0f95-44e6-827d-368939435ba4.png)

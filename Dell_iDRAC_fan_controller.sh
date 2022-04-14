@@ -55,6 +55,9 @@ IS_DELL_PROFILE_APPLIED=true
 
 # Start monitoring
 while true; do
+  sleep $CHECK_INTERVAL &
+  SLEEP_PROCESS_PID=$!
+
   DATA=$(ipmitool -I $LOGIN_STRING sdr type temperature | grep degrees)
   INLET_TEMPERATURE=$(echo "$DATA" | grep Inlet | grep -Po '\d{2}' | tail -1)
   EXHAUST_TEMPERATURE=$(echo "$DATA" | grep Exhaust | grep -Po '\d{2}' | tail -1)
@@ -109,6 +112,5 @@ while true; do
   printf "%12s  %3d°C  %3d°C  %3d°C  %5d°C  %40s  %s\n" "$(date +"%d-%m-%y %H:%M:%S")" $INLET_TEMPERATURE $CPU1_TEMPERATURE $CPU2_TEMPERATURE $EXHAUST_TEMPERATURE "$CURRENT_FAN_CONTROL_PROFILE" "$COMMENT"
 
   ((i++))
-  sleep $CHECK_INTERVAL &
-  wait $!
+  wait $SLEEP_PROCESS_PID
 done

@@ -2,13 +2,13 @@
 
 # Define global functions
 apply_Dell_profile () {
-  ipmitool -I $LOGIN_STRING raw 0x30 0x30 0x01 0x01
+  ipmitool -I $LOGIN_STRING raw 0x30 0x30 0x01 0x01 > /dev/null
   CURRENT_FAN_CONTROL_PROFILE="Dell default dynamic fan control profile"
 }
 
 apply_user_profile () {
-  ipmitool -I $LOGIN_STRING raw 0x30 0x30 0x01 0x00
-  ipmitool -I $LOGIN_STRING raw 0x30 0x30 0x02 0xff $HEXADECIMAL_FAN_SPEED
+  ipmitool -I $LOGIN_STRING raw 0x30 0x30 0x01 0x00 > /dev/null
+  ipmitool -I $LOGIN_STRING raw 0x30 0x30 0x02 0xff $HEXADECIMAL_FAN_SPEED > /dev/null
   CURRENT_FAN_CONTROL_PROFILE="User static fan control profile ($DECIMAL_FAN_SPEED%)"
 }
 
@@ -47,6 +47,7 @@ fi
 echo "Fan speed objective: $DECIMAL_FAN_SPEED%"
 echo "CPU temperature treshold: $CPU_TEMPERATURE_TRESHOLD°C"
 echo "Check interval: ${CHECK_INTERVAL}s"
+echo ""
 
 readonly TABLE_HEADER_PRINT_INTERVAL=10
 i=$TABLE_HEADER_PRINT_INTERVAL

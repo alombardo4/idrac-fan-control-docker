@@ -1,28 +1,22 @@
 FROM ubuntu:latest
 
+MAINTAINER tigerblue77
+
 RUN apt-get update
 
-RUN apt-get install ipmitool cron -y
+RUN apt-get install ipmitool -y
 
-COPY crontab /etc/cron.d/fan-control
+ADD Dell_iDRAC_fan_controller.sh /Dell_iDRAC_fan_controller.sh
 
-RUN chmod 0777 /etc/cron.d/fan-control
+RUN chmod 0777 /Dell_iDRAC_fan_controller.sh
 
-RUN touch /var/log/cron.log
+# you should override these default values when running. See README.md
+#ENV IDRAC_HOST 192.168.1.100
+ENV IDRAC_HOST local
+#ENV IDRAC_USERNAME root
+#ENV IDRAC_PASSWORD calvin
+ENV FAN_SPEED 5
+ENV CPU_TEMPERATURE_TRESHOLD 50
+ENV CHECK_INTERVAL 60
 
-ADD check-temp.sh /opt/check-temp.sh
-
-ADD startup.sh /startup.sh
-
-RUN chmod 0777 /opt/check-temp.sh
-
-RUN chmod 0777 /startup.sh
-
-RUN /usr/bin/crontab /etc/cron.d/fan-control
-
-# you should override these when running. See README.md
-ENV IDRAC_HOST 192.168.1.100
-ENV IDRAC_USER root
-ENV IDRAC_PW calvin
-ENV FANSPEED 0x05
-CMD /startup.sh && cron && tail -f /var/log/cron.log
+CMD ["/Dell_iDRAC_fan_controller.sh"]

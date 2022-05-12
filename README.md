@@ -38,4 +38,5 @@ services:
       - IDRAC_USER=root # set to your IPMI username
       - IDRAC_PW=calvin # set to your IPMI password
       - FAN_SPEED=0x05 # set to the decimal or hexadecimal value you want to set the fans to (from 0 to 100%)
+      - MAXTEMP=32 # set the maximum temperature (in celcius) before dynamic fan control kicks back in, optional, defaults to 32
 ```

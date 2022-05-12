@@ -3,6 +3,7 @@
 echo $IDRAC_HOST >> /host.txt
 echo $IDRAC_USER >> /user.txt
 echo $IDRAC_PW >> /pw.txt
+echo ${MAXTEMP:-32} >> /maxtemp.txt
 
 if [[ $FAN_SPEED == 0x* ]]
 then
@@ -23,3 +24,4 @@ then
   echo "PW: `cat /pw.txt`"
 fi
 echo "Fan speed objective: `cat /decimal_fan_speed.txt`%"
+echo "Max temp: `cat /maxtemp.txt`"

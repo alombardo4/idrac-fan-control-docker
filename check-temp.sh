@@ -5,8 +5,8 @@ IPMIUSER=`cat /user.txt`
 IPMIPW=`cat /pw.txt`
 DECIMAL_FAN_SPEED=`cat /decimal_fan_speed.txt`
 HEXADECIMAL_FAN_SPEED=`cat /hexadecimal_fan_speed.txt`
-
 MAXTEMP=32
+
 
 if [[ $IPMIHOST == "local" ]]
 then

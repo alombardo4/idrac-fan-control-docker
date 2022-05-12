@@ -21,8 +21,9 @@ RUN chmod 0777 /startup.sh
 RUN /usr/bin/crontab /etc/cron.d/fan-control
 
 # you should override these when running. See README.md
-ENV IDRAC_HOST 192.168.1.100
-ENV IDRAC_USER root
-ENV IDRAC_PW calvin
-ENV FANSPEED 0x05
+#ENV IDRAC_HOST 192.168.1.100
+ENV IDRAC_HOST local
+#ENV IDRAC_USER root
+#ENV IDRAC_PW calvin
+ENV FAN_SPEED 5
 CMD /startup.sh && cron && tail -f /var/log/cron.log

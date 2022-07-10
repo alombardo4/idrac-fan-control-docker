@@ -1,6 +1,6 @@
 FROM ubuntu:latest
 
-MAINTAINER tigerblue77
+LABEL org.opencontainers.image.authors="tigerblue77"
 
 RUN apt-get update
 

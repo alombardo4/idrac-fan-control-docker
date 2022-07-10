@@ -103,6 +103,7 @@ while true; do
     fi
   fi
 
+  # Print temperatures array
   if [ $i -ge $TABLE_HEADER_PRINT_INTERVAL ]
   then
     echo "                   ------- Temperatures -------"

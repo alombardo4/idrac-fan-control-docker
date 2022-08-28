@@ -33,6 +33,7 @@ docker run -d \
   -e FAN_SPEED=<dec or hex fan speed> \
   -e CPU_TEMPERATURE_TRESHOLD=<dec temperature treshold> \
   -e CHECK_INTERVAL=<seconds between each check> \
+  --device=/dev/ipmi0:/dev/ipmi0:rw \
   tigerblue77/dell_idrac_fan_controller:latest
 ```
 
@@ -69,7 +70,7 @@ services:
       - CPU_TEMPERATURE_TRESHOLD=<dec temperature treshold>
       - CHECK_INTERVAL=<seconds between each check>
     devices:
-      - /dev/ipmi0:/dev/ipmi0
+      - /dev/ipmi0:/dev/ipmi0:rw
 ```
 
 2. to use with LAN iDRAC:

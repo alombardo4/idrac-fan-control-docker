@@ -1,7 +1,7 @@
 <div id="top"></div>
 
 # Dell iDRAC fan controller Docker image
-https://hub.docker.com/repository/docker/tigerblue77/dell_idrac_fan_controller
+https://hub.docker.com/r/tigerblue77/dell_idrac_fan_controller
 
 <!-- TABLE OF CONTENTS -->
 <details>

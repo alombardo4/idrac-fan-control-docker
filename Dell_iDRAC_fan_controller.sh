@@ -1,19 +1,19 @@
 #!/bin/bash
 
 # Define global functions
-apply_Dell_profile () {
+function apply_Dell_profile () {
   ipmitool -I $LOGIN_STRING raw 0x30 0x30 0x01 0x01 > /dev/null
   CURRENT_FAN_CONTROL_PROFILE="Dell default dynamic fan control profile"
 }
 
-apply_user_profile () {
+function apply_user_profile () {
   ipmitool -I $LOGIN_STRING raw 0x30 0x30 0x01 0x00 > /dev/null
   ipmitool -I $LOGIN_STRING raw 0x30 0x30 0x02 0xff $HEXADECIMAL_FAN_SPEED > /dev/null
   CURRENT_FAN_CONTROL_PROFILE="User static fan control profile ($DECIMAL_FAN_SPEED%)"
 }
 
 # Prepare traps in case of container exit
-gracefull_exit () {
+function gracefull_exit () {
   apply_Dell_profile
   echo "/!\ WARNING /!\ Container stopped, Dell default dynamic fan control profile applied for safety."
   exit 0
@@ -49,6 +49,7 @@ echo "CPU temperature treshold: $CPU_TEMPERATURE_TRESHOLD°C"
 echo "Check interval: ${CHECK_INTERVAL}s"
 echo ""
 
+# Prepare required variables and constants
 readonly TABLE_HEADER_PRINT_INTERVAL=10
 i=$TABLE_HEADER_PRINT_INTERVAL
 IS_DELL_PROFILE_APPLIED=true

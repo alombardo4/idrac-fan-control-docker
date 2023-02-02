@@ -136,6 +136,16 @@ All parameters are optional as they have default values (including default iDRAC
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
+<!-- TROUBLESHOOTING -->
+## Troubleshooting
+
+If your server frequently switches back to the default Dell fan mode:
+1. Check `Tcase` (case temperature) of your CPU on Intel Ark website and then set `CPU_TEMPERATURE_TRESHOLD` to a slightly lower value. Example with my CPUs ([Intel Xeon E5-2630L v2](https://www.intel.com/content/www/us/en/products/sku/75791/intel-xeon-processor-e52630l-v2-15m-cache-2-40-ghz/specifications.html)) : Tcase = 63°C, I set `CPU_TEMPERATURE_TRESHOLD` to 60(°C).
+2. If it's already good, adapt your `FAN_SPEED` value to increase the airflow and thus further decrease the temperature of your CPU(s)
+3. If neither increasing the fan speed nor increasing the threshold solves your problem, then it may be time to replace your thermal paste
+
+<p align="right">(<a href="#top">back to top</a>)</p>
+
 <!-- CONTRIBUTING -->
 ## Contributing
 

@@ -12,9 +12,37 @@ function apply_user_profile () {
   CURRENT_FAN_CONTROL_PROFILE="User static fan control profile ($DECIMAL_FAN_SPEED%)"
 }
 
+function enable_third_party_PCIe_card_Dell_default_cooling_response () {
+  # We could check the current cooling response before applying but it's not very useful so let's skip the test and apply directly
+  ipmitool -I $LOGIN_STRING raw 0x30 0xce 0x00 0x16 0x05 0x00 0x00 0x00 0x05 0x00 0x00 0x00 0x00 > /dev/null
+}
+
+function disable_third_party_PCIe_card_Dell_default_cooling_response () {
+  # We could check the current cooling response before applying but it's not very useful so let's skip the test and apply directly
+  ipmitool -I $LOGIN_STRING raw 0x30 0xce 0x00 0x16 0x05 0x00 0x00 0x00 0x05 0x00 0x01 0x00 0x00 > /dev/null
+}
+
+# Returns :
+# - 0 if third-party PCIe card Dell default cooling response is currently DISABLED
+# - 1 if third-party PCIe card Dell default cooling response is currently ENABLED
+# - 2 if the current status returned by ipmitool command output is unexpected
+# function is_third_party_PCIe_card_Dell_default_cooling_response_disabled() {
+#   THIRD_PARTY_PCIE_CARD_COOLING_RESPONSE=$(ipmitool -I $LOGIN_STRING raw 0x30 0xce 0x01 0x16 0x05 0x00 0x00 0x00)
+
+#   if [ "$THIRD_PARTY_PCIE_CARD_COOLING_RESPONSE" == "16 05 00 00 00 05 00 01 00 00" ]; then
+#     return 0
+#   elif [ "$THIRD_PARTY_PCIE_CARD_COOLING_RESPONSE" == "16 05 00 00 00 05 00 00 00 00" ]; then
+#     return 1
+#   else
+#     echo "Unexpected output: $THIRD_PARTY_PCIE_CARD_COOLING_RESPONSE" >&2
+#     return 2
+#   fi
+# }
+
 # Prepare traps in case of container exit
 function gracefull_exit () {
   apply_Dell_profile
+  enable_third_party_PCIe_card_Dell_default_cooling_response
   echo "/!\ WARNING /!\ Container stopped, Dell default dynamic fan control profile applied for safety."
   exit 0
 }
@@ -104,14 +132,25 @@ while true; do
     fi
   fi
 
+  # Enable or disable, depending on the user's choice, third-party PCIe card Dell default cooling response
+  # No comment will be displayed on the change of this parameter since it is not related to the temperature of any device (CPU, GPU, etc...) but only to the settings made by the user when launching this Docker container
+  if $DISABLE_THIRD_PARTY_PCIE_CARD_DELL_DEFAULT_COOLING_RESPONSE
+  then
+    disable_third_party_PCIe_card_Dell_default_cooling_response
+    THIRD_PARTY_PCIE_CARD_DELL_DEFAULT_COOLING_RESPONSE_STATUS="Disabled"
+  else
+    enable_third_party_PCIe_card_Dell_default_cooling_response
+    THIRD_PARTY_PCIE_CARD_DELL_DEFAULT_COOLING_RESPONSE_STATUS="Enabled"
+  fi
+
   # Print temperatures array
   if [ $i -ge $TABLE_HEADER_PRINT_INTERVAL ]
   then
     echo "                   ------- Temperatures -------"
-    echo "   Date & time     Inlet  CPU 1  CPU 2  Exhaust          Active fan speed profile          Comment"
+    echo "   Date & time     Inlet  CPU 1  CPU 2  Exhaust          Active fan speed profile          Third-party PCIe card Dell default cooling response  Comment"
     i=0
   fi
-  printf "%12s  %3d°C  %3d°C  %3d°C  %5d°C  %40s  %s\n" "$(date +"%d-%m-%y %H:%M:%S")" $INLET_TEMPERATURE $CPU1_TEMPERATURE $CPU2_TEMPERATURE $EXHAUST_TEMPERATURE "$CURRENT_FAN_CONTROL_PROFILE" "$COMMENT"
+  printf "%12s  %3d°C  %3d°C  %3d°C  %5d°C  %40s  %51s  %s\n" "$(date +"%d-%m-%y %H:%M:%S")" $INLET_TEMPERATURE $CPU1_TEMPERATURE $CPU2_TEMPERATURE $EXHAUST_TEMPERATURE "$CURRENT_FAN_CONTROL_PROFILE" "$THIRD_PARTY_PCIE_CARD_DELL_DEFAULT_COOLING_RESPONSE_STATUS" "$COMMENT"
 
   ((i++))
   wait $SLEEP_PROCESS_PID

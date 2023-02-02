@@ -16,7 +16,7 @@ https://hub.docker.com/r/tigerblue77/dell_idrac_fan_controller
 
 ## Container console log example
 
-![image](https://user-images.githubusercontent.com/37409593/163174925-d3d20ed6-0f95-44e6-827d-368939435ba4.png)
+![image](https://user-images.githubusercontent.com/37409593/216442212-d2ad7ff7-0d6f-443f-b8ac-c67b5f613b83.png)
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 

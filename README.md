@@ -1,7 +1,9 @@
 <div id="top"></div>
 
 # Dell iDRAC fan controller Docker image
-https://hub.docker.com/r/tigerblue77/dell_idrac_fan_controller
+Download Docker image from :
+- [Docker Hub](https://hub.docker.com/r/tigerblue77/dell_idrac_fan_controller)
+- [GitHub Containers Repository](https://github.com/tigerblue77/Dell_iDRAC_fan_controller_Docker/pkgs/container/dell_idrac_fan_controller_docker)
 
 <!-- TABLE OF CONTENTS -->
 <details>
@@ -10,6 +12,7 @@ https://hub.docker.com/r/tigerblue77/dell_idrac_fan_controller
     <li><a href="#container-console-log-example">Container console log example</a></li>
     <li><a href="#usage">Usage</a></li>
     <li><a href="#parameters">Parameters</a></li>
+    <li><a href="#troubleshooting">Troubleshooting</a></li>
     <li><a href="#contributing">Contributing</a></li>
   </ol>
 </details>

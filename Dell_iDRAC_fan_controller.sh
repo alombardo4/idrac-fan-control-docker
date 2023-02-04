@@ -16,6 +16,41 @@ function apply_user_fan_control_profile () {
   CURRENT_FAN_CONTROL_PROFILE="User static fan control profile ($DECIMAL_FAN_SPEED%)"
 }
 
+# Retrieve temperature sensors data using ipmitool
+# Usage : retrieve_temperatures $IS_EXHAUST_TEMPERATURE_SENSOR_PRESENT $IS_CPU2_TEMPERATURE_SENSOR_PRESENT
+function retrieve_temperatures () {
+  if (( $# != 2 ))
+  then
+    printf "Illegal number of parameters.\nUsage: retrieve_temperatures \$IS_EXHAUST_TEMPERATURE_SENSOR_PRESENT \$IS_CPU2_TEMPERATURE_SENSOR_PRESENT" >&2
+    return 1
+  fi
+  local IS_EXHAUST_TEMPERATURE_SENSOR_PRESENT=$1
+  local IS_CPU2_TEMPERATURE_SENSOR_PRESENT=$2
+
+  local DATA=$(ipmitool -I $IDRAC_LOGIN_STRING sdr type temperature | grep degrees)
+
+  # Parse CPU data
+  local CPU_DATA=$(echo "$DATA" | grep "3\." | grep -Po '\d{2}')
+  CPU1_TEMPERATURE=$(echo $CPU_DATA | awk '{print $1;}')
+  if $IS_CPU2_TEMPERATURE_SENSOR_PRESENT
+  then
+    CPU2_TEMPERATURE=$(echo $CPU_DATA | awk '{print $2;}')
+  else
+    CPU2_TEMPERATURE="-"
+  fi
+
+  # Parse inlet temperature data
+  INLET_TEMPERATURE=$(echo "$DATA" | grep Inlet | grep -Po '\d{2}' | tail -1)
+
+  # If exhaust temperature sensor is present, parse its temperature data
+  if $IS_EXHAUST_TEMPERATURE_SENSOR_PRESENT
+  then
+    EXHAUST_TEMPERATURE=$(echo "$DATA" | grep Exhaust | grep -Po '\d{2}' | tail -1)
+  else
+    EXHAUST_TEMPERATURE="-"
+  fi
+}
+
 function enable_third_party_PCIe_card_Dell_default_cooling_response () {
   # We could check the current cooling response before applying but it's not very useful so let's skip the test and apply directly
   ipmitool -I $IDRAC_LOGIN_STRING raw 0x30 0xce 0x00 0x16 0x05 0x00 0x00 0x00 0x05 0x00 0x00 0x00 0x00 > /dev/null
@@ -98,23 +133,40 @@ i=$TABLE_HEADER_PRINT_INTERVAL
 # Set the flag used to check if the active fan control profile has changed
 IS_DELL_FAN_CONTROL_PROFILE_APPLIED=true
 
+# Check present sensors
+IS_EXHAUST_TEMPERATURE_SENSOR_PRESENT=true
+IS_CPU2_TEMPERATURE_SENSOR_PRESENT=true
+retrieve_temperatures $IS_EXHAUST_TEMPERATURE_SENSOR_PRESENT $IS_CPU2_TEMPERATURE_SENSOR_PRESENT
+if [ -z "$EXHAUST_TEMPERATURE" ]
+then
+  echo "No exhaust temperature sensor detected."
+  IS_EXHAUST_TEMPERATURE_SENSOR_PRESENT=false
+fi
+if [ -z "$CPU2_TEMPERATURE" ]
+then
+  echo "No CPU2 temperature sensor detected."
+  IS_CPU2_TEMPERATURE_SENSOR_PRESENT=false
+fi
+# Output new line to beautify output if one of the previous conditions have echoed
+if ! $IS_EXHAUST_TEMPERATURE_SENSOR_PRESENT || ! $IS_CPU2_TEMPERATURE_SENSOR_PRESENT
+then
+  echo ""
+fi
+
 # Start monitoring
 while true; do
   # Sleep for the specified interval before taking another reading
   sleep $CHECK_INTERVAL &
   SLEEP_PROCESS_PID=$!
 
-  # Retrieve sensor data using ipmitool
-  DATA=$(ipmitool -I $IDRAC_LOGIN_STRING sdr type temperature | grep degrees)
-  INLET_TEMPERATURE=$(echo "$DATA" | grep Inlet | grep -Po '\d{2}' | tail -1)
-  EXHAUST_TEMPERATURE=$(echo "$DATA" | grep Exhaust | grep -Po '\d{2}' | tail -1)
-  CPU_DATA=$(echo "$DATA" | grep "3\." | grep -Po '\d{2}')
-  CPU1_TEMPERATURE=$(echo $CPU_DATA | awk '{print $1;}')
-  CPU2_TEMPERATURE=$(echo $CPU_DATA | awk '{print $2;}')
+  retrieve_temperatures $IS_EXHAUST_TEMPERATURE_SENSOR_PRESENT $IS_CPU2_TEMPERATURE_SENSOR_PRESENT
 
   # Define functions to check if CPU 1 and CPU 2 temperatures are above the threshold
   function CPU1_OVERHEAT () { [ $CPU1_TEMPERATURE -gt $CPU_TEMPERATURE_TRESHOLD ]; }
-  function CPU2_OVERHEAT () { [ $CPU2_TEMPERATURE -gt $CPU_TEMPERATURE_TRESHOLD ]; }
+  if $IS_CPU2_TEMPERATURE_SENSOR_PRESENT
+  then
+    function CPU2_OVERHEAT () { [ $CPU2_TEMPERATURE -gt $CPU_TEMPERATURE_TRESHOLD ]; }
+  fi
 
   # Initialize a variable to store the comments displayed when the fan control profile changed
   COMMENT=" -"
@@ -127,16 +179,17 @@ while true; do
     then
       IS_DELL_FAN_CONTROL_PROFILE_APPLIED=true
 
-      # Check if CPU 2 is overheating too, Dell default dynamic fan control profile already applied before
-      if CPU2_OVERHEAT
+      # If CPU 2 temperature sensor is present, check if it is overheating too.
+      # Do not apply Dell default dynamic fan control profile as it has already been applied before
+      if $IS_CPU2_TEMPERATURE_SENSOR_PRESENT && CPU2_OVERHEAT
       then
         COMMENT="CPU 1 and CPU 2 temperatures are too high, Dell default dynamic fan control profile applied for safety"
       else
         COMMENT="CPU 1 temperature is too high, Dell default dynamic fan control profile applied for safety"
       fi
     fi
-  # Check if CPU 2 is overheating then apply Dell default dynamic fan control profile if true
-  elif CPU2_OVERHEAT
+  # If CPU 2 temperature sensor is present, check if it is overheating then apply Dell default dynamic fan control profile if true
+  elif $IS_CPU2_TEMPERATURE_SENSOR_PRESENT && CPU2_OVERHEAT
   then
     apply_Dell_fan_control_profile
 
@@ -174,7 +227,7 @@ while true; do
     echo "    Date & time      Inlet  CPU 1  CPU 2  Exhaust          Active fan speed profile          Third-party PCIe card Dell default cooling response  Comment"
     i=0
   fi
-  printf "%19s  %3d°C  %3d°C  %3d°C  %5d°C  %40s  %51s  %s\n" "$(date +"%d-%m-%Y %T")" $INLET_TEMPERATURE $CPU1_TEMPERATURE $CPU2_TEMPERATURE $EXHAUST_TEMPERATURE "$CURRENT_FAN_CONTROL_PROFILE" "$THIRD_PARTY_PCIE_CARD_DELL_DEFAULT_COOLING_RESPONSE_STATUS" "$COMMENT"
+  printf "%19s  %3d°C  %3d°C  %3s°C  %5s°C  %40s  %51s  %s\n" "$(date +"%d-%m-%Y %T")" $INLET_TEMPERATURE $CPU1_TEMPERATURE "$CPU2_TEMPERATURE" "$EXHAUST_TEMPERATURE" "$CURRENT_FAN_CONTROL_PROFILE" "$THIRD_PARTY_PCIE_CARD_DELL_DEFAULT_COOLING_RESPONSE_STATUS" "$COMMENT"
   ((i++))
   wait $SLEEP_PROCESS_PID
 done

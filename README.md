@@ -25,6 +25,10 @@ Download Docker image from :
 
 <!-- PREREQUISITES -->
 ## Prerequisites
+### iDRAC version
+
+This Docker container only works on Dell PowerEdge servers that support IPMI commands, i.e. < iDRAC 9 firmware 3.30.30.30.
+
 ### To access iDRAC over LAN (not needed in "local" mode) :
 
 1. Log into your iDRAC web console

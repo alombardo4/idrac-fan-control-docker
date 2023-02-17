@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Enable strict bash mode to stop the script if an uninitialized variable is used, if a command fails, or if a command with a pipe fails
+set -euo pipefail
+
 # Define global functions
 # This function applies Dell's default dynamic fan control profile
 function apply_Dell_fan_control_profile () {

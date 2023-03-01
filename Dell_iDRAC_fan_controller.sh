@@ -1,7 +1,8 @@
 #!/bin/bash
 
 # Enable strict bash mode to stop the script if an uninitialized variable is used, if a command fails, or if a command with a pipe fails
-set -euo pipefail
+# Not working in some setups : https://github.com/tigerblue77/Dell_iDRAC_fan_controller/issues/48
+# set -euo pipefail
 
 # Define global functions
 # This function applies Dell's default dynamic fan control profile
@@ -231,6 +232,6 @@ while true; do
     i=0
   fi
   printf "%19s  %3d°C  %3d°C  %3s°C  %5s°C  %40s  %51s  %s\n" "$(date +"%d-%m-%Y %T")" $INLET_TEMPERATURE $CPU1_TEMPERATURE "$CPU2_TEMPERATURE" "$EXHAUST_TEMPERATURE" "$CURRENT_FAN_CONTROL_PROFILE" "$THIRD_PARTY_PCIE_CARD_DELL_DEFAULT_COOLING_RESPONSE_STATUS" "$COMMENT"
-  ((++i))
+  ((i++))
   wait $SLEEP_PROCESS_PID
 done

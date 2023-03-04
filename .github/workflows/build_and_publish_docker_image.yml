@@ -3,22 +3,32 @@ name: Docker image CI
 on:
   push:
     branches: [ master ]
+    paths-ignore:
+      - '**/README.md'
 
 jobs:
   build:
-    name: Build and push Docker image to Docker Hub and GitHub Containers Repository
+    name: Build and publish Docker image to Docker Hub and GitHub Containers Repository
     runs-on: ubuntu-latest
     steps:
     - name: Checkout
       uses: actions/checkout@v3
+
+    - name: Remove "_Docker" suffix from GitHub repository name to use it as image name
+      uses: mad9000/actions-find-and-replace-string@3
+      id: docker_image_name
+      with:
+        source: ${{ github.repository }}
+        find: '_Docker'
+        replace: ''
       
     - name: Docker meta
       id: meta
       uses: docker/metadata-action@v4
       with:
         images: |
-          ${{ github.repository }}
-          ghcr.io/${{ github.repository }}
+          ${{ steps.docker_image_name.outputs.value }}
+          ghcr.io/${{ steps.docker_image_name.outputs.value }}
         tags: type=raw,value=latest
         
     - name: Login to Docker Hub
@@ -37,7 +47,7 @@ jobs:
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v2
 
-    - name: Build and push Docker image
+    - name: Build and publish Docker image
       uses: docker/build-push-action@v4
       with:
         context: .

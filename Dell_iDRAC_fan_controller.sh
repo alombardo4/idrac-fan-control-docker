@@ -127,7 +127,7 @@ fi
 
 # Log the fan speed objective, CPU temperature threshold and check interval
 echo "Fan speed objective: $DECIMAL_FAN_SPEED%"
-echo "CPU temperature treshold: $CPU_TEMPERATURE_TRESHOLD°C"
+echo "CPU temperature threshold: $CPU_TEMPERATURE_THRESHOLD°C"
 echo "Check interval: ${CHECK_INTERVAL}s"
 echo ""
 
@@ -166,10 +166,10 @@ while true; do
   retrieve_temperatures $IS_EXHAUST_TEMPERATURE_SENSOR_PRESENT $IS_CPU2_TEMPERATURE_SENSOR_PRESENT
 
   # Define functions to check if CPU 1 and CPU 2 temperatures are above the threshold
-  function CPU1_OVERHEAT () { [ $CPU1_TEMPERATURE -gt $CPU_TEMPERATURE_TRESHOLD ]; }
+  function CPU1_OVERHEAT () { [ $CPU1_TEMPERATURE -gt $CPU_TEMPERATURE_THRESHOLD ]; }
   if $IS_CPU2_TEMPERATURE_SENSOR_PRESENT
   then
-    function CPU2_OVERHEAT () { [ $CPU2_TEMPERATURE -gt $CPU_TEMPERATURE_TRESHOLD ]; }
+    function CPU2_OVERHEAT () { [ $CPU2_TEMPERATURE -gt $CPU_TEMPERATURE_THRESHOLD ]; }
   fi
 
   # Initialize a variable to store the comments displayed when the fan control profile changed
@@ -209,7 +209,7 @@ while true; do
     if $IS_DELL_FAN_CONTROL_PROFILE_APPLIED
     then
       IS_DELL_FAN_CONTROL_PROFILE_APPLIED=false
-      COMMENT="CPU temperature decreased and is now OK (<= $CPU_TEMPERATURE_TRESHOLD°C), user's fan control profile applied."
+      COMMENT="CPU temperature decreased and is now OK (<= $CPU_TEMPERATURE_THRESHOLD°C), user's fan control profile applied."
     fi
   fi
 

@@ -12,6 +12,7 @@ Download Docker image from :
   <summary>Table of Contents</summary>
   <ol>
     <li><a href="#container-console-log-example">Container console log example</a></li>
+    <li><a href="#supported-architectures">Supported architectures</a></li>
     <li><a href="#usage">Usage</a></li>
     <li><a href="#parameters">Parameters</a></li>
     <li><a href="#troubleshooting">Troubleshooting</a></li>
@@ -54,6 +55,15 @@ ipmitool -I lanplus \
   -P <iDRAC password> \
   sdr elist all
 ```
+
+<p align="right">(<a href="#top">back to top</a>)</p>
+
+<!-- SUPPORTED ARCHITECTURES -->
+## Supported architectures
+
+This Docker container is currently built and available for the following CPU architectures :
+- AMD64
+- ARM64
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 

@@ -81,7 +81,9 @@ docker run -d \
   -e CPU_TEMPERATURE_THRESHOLD=<decimal temperature threshold> \
   -e CHECK_INTERVAL=<seconds between each check> \
   -e DISABLE_THIRD_PARTY_PCIE_CARD_DELL_DEFAULT_COOLING_RESPONSE=<true or false> \
+  --cap-add SYS_RAWIO \
   --device=/dev/ipmi0:/dev/ipmi0:rw \
+  --device=/dev/mem:/dev/mem:ro \
   tigerblue77/dell_idrac_fan_controller:latest
 ```
 
@@ -112,6 +114,8 @@ services:
   Dell_iDRAC_fan_controller:
     image: tigerblue77/dell_idrac_fan_controller:latest
     container_name: Dell_iDRAC_fan_controller
+    cap_add:
+      - SYS_RAWIO # Required for dmidecode to work
     restart: unless-stopped
     environment:
       - IDRAC_HOST=local
@@ -121,6 +125,7 @@ services:
       - DISABLE_THIRD_PARTY_PCIE_CARD_DELL_DEFAULT_COOLING_RESPONSE=<true or false>
     devices:
       - /dev/ipmi0:/dev/ipmi0:rw
+      - /dev/mem:/dev/mem:rw # Required for dmidecode to work
 ```
 
 2. to use with LAN iDRAC:

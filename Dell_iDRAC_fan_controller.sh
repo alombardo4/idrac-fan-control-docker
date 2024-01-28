@@ -90,6 +90,14 @@ function gracefull_exit () {
   exit 0
 }
 
+# Helps debugging when people are posting their output
+function get_Dell_server_model () {
+  IPMI_FRU_content=$(ipmitool fru 2>/dev/null) # FRU stands for "Field Replaceable Unit"
+
+  SERVER_MANUFACTURER=$(echo "$IPMI_FRU_content" | grep "Product Manufacturer" | awk -F ': ' '{print $2}')
+  SERVER_MODEL=$(echo "$IPMI_FRU_content" | grep "Product Name" | awk -F ': ' '{print $2}')
+}
+
 # Trap the signals for container exit and run gracefull_exit function
 trap 'gracefull_exit' SIGQUIT SIGKILL SIGTERM
 
@@ -113,6 +121,9 @@ echo "iDRAC/IPMI host: $IDRAC_HOST"
 # Check if the iDRAC host is set to 'local' or not then set the IDRAC_LOGIN_STRING accordingly
 if [[ $IDRAC_HOST == "local" ]]
 then
+  get_Dell_server_model
+  echo "Server model: $SERVER_MANUFACTURER $SERVER_MODEL"
+
   # Check that the Docker host IPMI device (the iDRAC) has been exposed to the Docker container
   if [ ! -e "/dev/ipmi0" ] && [ ! -e "/dev/ipmi/0" ] && [ ! -e "/dev/ipmidev/0" ]; then
     echo "/!\ Could not open device at /dev/ipmi0 or /dev/ipmi/0 or /dev/ipmidev/0, check that you added the device to your Docker container or stop using local mode. Exiting." >&2

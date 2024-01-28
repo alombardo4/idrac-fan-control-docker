@@ -90,21 +90,12 @@ function gracefull_exit () {
   exit 0
 }
 
-# Help debugging when people are posting their output
-# /!\ This function only works when started in local mode /!\
+# Helps debugging when people are posting their output
 function get_Dell_server_model () {
-  # Check that the Docker host IPMI device (the iDRAC) has been exposed to the Docker container
-  if [ ! -e "/dev/mem" ]; then
-    echo "/!\ Could not open device at /dev/mem, check that you added the device to your Docker container or stop using local mode. Exiting." >&2
-    exit 1
-  fi
-  apt-get install dmidecode -qq > /dev/null 2>&1
+  IPMI_FRU_content=$(ipmitool fru 2>/dev/null) # FRU stands for "Field Replaceable Unit"
 
-  SERVER_MANUFACTURER=$(dmidecode -s system-manufacturer)
-  SERVER_MODEL=$(dmidecode -s system-product-name)
-
-  apt-get remove --purge dmidecode -qq > /dev/null
-  apt-get clean -qq
+  SERVER_MANUFACTURER=$(echo "$IPMI_FRU_content" | grep "Product Manufacturer" | awk -F ': ' '{print $2}')
+  SERVER_MODEL=$(echo "$IPMI_FRU_content" | grep "Product Name" | awk -F ': ' '{print $2}')
 }
 
 # Trap the signals for container exit and run gracefull_exit function

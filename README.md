@@ -106,7 +106,7 @@ docker run -d \
 1. to use with local iDRAC:
 
 ```yml
-version: '3'
+version: '3.8'
 
 services:
   Dell_iDRAC_fan_controller:
@@ -126,7 +126,7 @@ services:
 2. to use with LAN iDRAC:
 
 ```yml
-version: '3'
+version: '3.8'
 
 services:
   Dell_iDRAC_fan_controller:

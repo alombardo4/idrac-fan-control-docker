@@ -117,6 +117,12 @@ fi
 
 get_Dell_server_model
 
+if [[ ! $SERVER_MANUFACTURER == "DELL" ]]
+then
+  echo "/!\ Your server isn't a Dell product. Exiting." >&2
+  exit 1
+fi
+
 # Log main informations
 echo "Server model: $SERVER_MANUFACTURER $SERVER_MODEL"
 echo "iDRAC/IPMI host: $IDRAC_HOST"

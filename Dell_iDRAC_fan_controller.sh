@@ -23,18 +23,6 @@ else
   HEXADECIMAL_FAN_SPEED=$(printf '0x%02x' $FAN_SPEED)
 fi
 
-get_Dell_server_model
-
-if [[ ! $SERVER_MANUFACTURER == "DELL" ]]
-then
-  echo "/!\ Your server isn't a Dell product. Exiting." >&2
-  exit 1
-fi
-
-# Log main informations
-echo "Server model: $SERVER_MANUFACTURER $SERVER_MODEL"
-echo "iDRAC/IPMI host: $IDRAC_HOST"
-
 # Check if the iDRAC host is set to 'local' or not then set the IDRAC_LOGIN_STRING accordingly
 if [[ $IDRAC_HOST == "local" ]]
 then
@@ -49,6 +37,18 @@ else
   echo "iDRAC/IPMI password: $IDRAC_PASSWORD"
   IDRAC_LOGIN_STRING="lanplus -H $IDRAC_HOST -U $IDRAC_USERNAME -P $IDRAC_PASSWORD"
 fi
+
+get_Dell_server_model
+
+if [[ ! $SERVER_MANUFACTURER == "DELL" ]]
+then
+  echo "/!\ Your server isn't a Dell product. Exiting." >&2
+  exit 1
+fi
+
+# Log main informations
+echo "Server model: $SERVER_MANUFACTURER $SERVER_MODEL"
+echo "iDRAC/IPMI host: $IDRAC_HOST"
 
 # Log the fan speed objective, CPU temperature threshold and check interval
 echo "Fan speed objective: $DECIMAL_FAN_SPEED%"

@@ -86,7 +86,7 @@ function gracefull_exit () {
 
 # Helps debugging when people are posting their output
 function get_Dell_server_model () {
-  IPMI_FRU_content=$(ipmitool fru 2>/dev/null) # FRU stands for "Field Replaceable Unit"
+  IPMI_FRU_content=$(ipmitool -I $IDRAC_LOGIN_STRING fru 2>/dev/null) # FRU stands for "Field Replaceable Unit"
 
   SERVER_MANUFACTURER=$(echo "$IPMI_FRU_content" | grep "Product Manufacturer" | awk -F ': ' '{print $2}')
   SERVER_MODEL=$(echo "$IPMI_FRU_content" | grep "Product Name" | awk -F ': ' '{print $2}')

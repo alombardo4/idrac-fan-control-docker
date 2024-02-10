@@ -90,4 +90,14 @@ function get_Dell_server_model () {
 
   SERVER_MANUFACTURER=$(echo "$IPMI_FRU_content" | grep "Product Manufacturer" | awk -F ': ' '{print $2}')
   SERVER_MODEL=$(echo "$IPMI_FRU_content" | grep "Product Name" | awk -F ': ' '{print $2}')
+
+  # Check if SERVER_MANUFACTURER is empty, if yes, assign value based on "Board Mfg"
+  if [ -z "$SERVER_MANUFACTURER" ]; then
+    SERVER_MANUFACTURER=$(echo "$IPMI_FRU_content" | tr -s ' ' | grep "Board Mfg :" | awk -F ': ' '{print $2}')
+  fi
+
+  # Check if SERVER_MODEL is empty, if yes, assign value based on "Board Product"
+  if [ -z "$SERVER_MODEL" ]; then
+    SERVER_MODEL=$(echo "$IPMI_FRU_content" | tr -s ' ' | grep "Board Product :" | awk -F ': ' '{print $2}')
+  fi
 }

@@ -16,11 +16,11 @@ trap 'gracefull_exit' SIGQUIT SIGKILL SIGTERM
 # Check if FAN_SPEED variable is in hexadecimal format. If not, convert it to hexadecimal
 if [[ $FAN_SPEED == 0x* ]]
 then
-  DECIMAL_FAN_SPEED=$(printf '%d' $FAN_SPEED)
-  HEXADECIMAL_FAN_SPEED=$FAN_SPEED
+  readonly DECIMAL_FAN_SPEED=$(printf '%d' $FAN_SPEED)
+  readonly HEXADECIMAL_FAN_SPEED=$FAN_SPEED
 else
-  DECIMAL_FAN_SPEED=$FAN_SPEED
-  HEXADECIMAL_FAN_SPEED=$(printf '0x%02x' $FAN_SPEED)
+  readonly DECIMAL_FAN_SPEED=$FAN_SPEED
+  readonly HEXADECIMAL_FAN_SPEED=$(printf '0x%02x' $FAN_SPEED)
 fi
 
 # Check if the iDRAC host is set to 'local' or not then set the IDRAC_LOGIN_STRING accordingly

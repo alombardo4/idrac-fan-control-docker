@@ -14,6 +14,15 @@ function apply_user_fan_control_profile () {
   CURRENT_FAN_CONTROL_PROFILE="User static fan control profile ($DECIMAL_FAN_SPEED%)"
 }
 
+# Convert first parameter given ($DECIMAL_NUMBER) to hexadecimal
+# Usage : convert_decimal_value_to_hexadecimal $DECIMAL_NUMBER
+# Returns : hexadecimal value of DECIMAL_NUMBER
+function convert_decimal_value_to_hexadecimal () {
+  local DECIMAL_NUMBER=$1
+  local HEXADECIMAL_NUMBER=$(printf '0x%02x' $DECIMAL_NUMBER)
+  echo $HEXADECIMAL_NUMBER
+}
+
 # Retrieve temperature sensors data using ipmitool
 # Usage : retrieve_temperatures $IS_EXHAUST_TEMPERATURE_SENSOR_PRESENT $IS_CPU2_TEMPERATURE_SENSOR_PRESENT
 function retrieve_temperatures () {

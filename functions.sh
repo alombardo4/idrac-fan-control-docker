@@ -38,7 +38,7 @@ function retrieve_temperatures () {
 
   # Parse CPU data
   local CPU_DATA=$(echo "$DATA" | grep "3\." | grep -Po '\d{2}')
-  if $14_GEN
+  if $DELL_14_GEN
   then
     # 14 Gen server or newer
     CPU1_TEMPERATURE=$(echo $CPU_DATA | awk '{print $2;}')
@@ -48,7 +48,7 @@ function retrieve_temperatures () {
   fi
   if $IS_CPU2_TEMPERATURE_SENSOR_PRESENT
   then
-    if $14_GEN
+    if $DELL_14_GEN
     then
       # 14 Gen server or newer
       CPU2_TEMPERATURE=$(echo $CPU_DATA | awk '{print $4;}')
@@ -74,7 +74,7 @@ function retrieve_temperatures () {
 
 function enable_third_party_PCIe_card_Dell_default_cooling_response () {
   # We could check the current cooling response before applying but it's not very useful so let's skip the test and apply directly
-  if $14_GEN
+  if $DELL_14_GEN
   then
     # 14 Gen server or newer
     continue
@@ -86,7 +86,7 @@ function enable_third_party_PCIe_card_Dell_default_cooling_response () {
 
 function disable_third_party_PCIe_card_Dell_default_cooling_response () {
   # We could check the current cooling response before applying but it's not very useful so let's skip the test and apply directly
-  if $14_GEN
+  if $DELL_14_GEN
   then
     # 14 Gen server or newer
     continue

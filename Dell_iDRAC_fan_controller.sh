@@ -6,8 +6,8 @@
 
 source functions.sh
 
-# Trap the signals for container exit and run gracefull_exit function
-trap 'gracefull_exit' SIGQUIT SIGKILL SIGTERM
+# Trap the signals for container exit and run graceful_exit function
+trap 'graceful_exit' SIGQUIT SIGKILL SIGTERM
 
 # Prepare, format and define initial variables
 

@@ -86,9 +86,15 @@ function disable_third_party_PCIe_card_Dell_default_cooling_response () {
 # }
 
 # Prepare traps in case of container exit
-function gracefull_exit () {
+function graceful_exit () {
   apply_Dell_fan_control_profile
-  enable_third_party_PCIe_card_Dell_default_cooling_response
+
+  # Reset third-party PCIe card cooling response to Dell default depending on the user's choice at startup
+  if ! $KEEP_THIRD_PARTY_PCIE_CARD_COOLING_RESPONSE_STATE_ON_EXIT
+  then
+    enable_third_party_PCIe_card_Dell_default_cooling_response
+  fi
+
   echo "/!\ WARNING /!\ Container stopped, Dell default dynamic fan control profile applied for safety."
   exit 0
 }

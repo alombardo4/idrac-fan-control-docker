@@ -81,6 +81,7 @@ docker run -d \
   -e CPU_TEMPERATURE_THRESHOLD=<decimal temperature threshold> \
   -e CHECK_INTERVAL=<seconds between each check> \
   -e DISABLE_THIRD_PARTY_PCIE_CARD_DELL_DEFAULT_COOLING_RESPONSE=<true or false> \
+  -e KEEP_THIRD_PARTY_PCIE_CARD_COOLING_RESPONSE_STATE_ON_EXIT=<true or false> \
   --device=/dev/ipmi0:/dev/ipmi0:rw \
   tigerblue77/dell_idrac_fan_controller:latest
 ```
@@ -98,6 +99,7 @@ docker run -d \
   -e CPU_TEMPERATURE_THRESHOLD=<decimal temperature threshold> \
   -e CHECK_INTERVAL=<seconds between each check> \
   -e DISABLE_THIRD_PARTY_PCIE_CARD_DELL_DEFAULT_COOLING_RESPONSE=<true or false> \
+  -e KEEP_THIRD_PARTY_PCIE_CARD_COOLING_RESPONSE_STATE_ON_EXIT=<true or false> \
   tigerblue77/dell_idrac_fan_controller:latest
 ```
 
@@ -119,6 +121,7 @@ services:
       - CPU_TEMPERATURE_THRESHOLD=<decimal temperature threshold>
       - CHECK_INTERVAL=<seconds between each check>
       - DISABLE_THIRD_PARTY_PCIE_CARD_DELL_DEFAULT_COOLING_RESPONSE=<true or false>
+      - KEEP_THIRD_PARTY_PCIE_CARD_COOLING_RESPONSE_STATE_ON_EXIT=<true or false>
     devices:
       - /dev/ipmi0:/dev/ipmi0:rw
 ```
@@ -141,6 +144,7 @@ services:
       - CPU_TEMPERATURE_THRESHOLD=<decimal temperature threshold>
       - CHECK_INTERVAL=<seconds between each check>
       - DISABLE_THIRD_PARTY_PCIE_CARD_DELL_DEFAULT_COOLING_RESPONSE=<true or false>
+      - KEEP_THIRD_PARTY_PCIE_CARD_COOLING_RESPONSE_STATE_ON_EXIT=<true or false>
 ```
 
 <p align="right">(<a href="#top">back to top</a>)</p>
@@ -157,6 +161,7 @@ All parameters are optional as they have default values (including default iDRAC
 - `CPU_TEMPERATURE_THRESHOLD` parameter is the T°junction (junction temperature) threshold beyond which the Dell fan mode defined in your BIOS will become active again (to protect the server hardware against overheat). **Default** value is 50(°C).
 - `CHECK_INTERVAL` parameter is the time (in seconds) between each temperature check and potential profile change. **Default** value is 60(s).
 - `DISABLE_THIRD_PARTY_PCIE_CARD_DELL_DEFAULT_COOLING_RESPONSE` parameter is a boolean that allows to disable third-party PCIe card Dell default cooling response. **Default** value is false.
+- `KEEP_THIRD_PARTY_PCIE_CARD_COOLING_RESPONSE_STATE_ON_EXIT` parameter is a boolean that allows to keep the third-party PCIe card Dell default cooling response state upon exit. **Default** value is false, so that it resets the third-party PCIe card Dell default cooling response to Dell default.
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 

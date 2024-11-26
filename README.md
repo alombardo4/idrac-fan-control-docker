@@ -1,5 +1,7 @@
 # IDRAC Fan Controller Docker Image
 
+> Note: This repository has been abandoned for quite a while now as I no longer own any Dell servers. [tigerblue77](https://github.com/tigerblue77) has created an excellent [fork](https://github.com/tigerblue77/Dell_iDRAC_fan_controller_Docker) that improves heavily on what I did here. I recommend you use that instead.
+
 To use, 
 
 `docker run -e IDRAC_HOST=<host ip> -e IDRAC_USER=<username> -e IDRAC_PW=<password> -e FAN_SPEED=<dec or hex fan speed> alombardo4/idrac-fan-control:latest`
